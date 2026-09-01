@@ -1,0 +1,90 @@
+# Zep CE stack for the Memory Rebirth Attack study.
+#
+# Differences from the upstream legacy/docker-compose.ce.yaml, and why:
+#   * `zep` is BUILT from config/zep_ce.Dockerfile; the published `zepai/zep:latest`
+#     image no longer exists on Docker Hub (Zep moved to a cloud-only product), and
+#     upstream's own Dockerfile.ce pins a Go toolchain older than its source requires.
+#   * every published port is shifted off the defaults, because this machine already
+#     runs the study's own Neo4j (7688) and unrelated services on 8003/8005/8010.
+#   * graphiti points at a local LiteLLM shim (config/zep_shim.yaml) so its hardwired
+#     OpenAI model names resolve to the same models/embedder as every other arm.
+#
+# Start `litellm --config config/zep_shim.yaml --port 4000` first, then this compose file.
+
+name: zep-ce-rebirth
+
+services:
+  zep:
+    build:
+      context: ../../test-project/zep/legacy
+      dockerfile: ../../../mwe/config/zep_ce.Dockerfile
+    ports:
+      - "8020:8000"
+    volumes:
+      # local copy of upstream zep.yaml with api_secret filled in (CE refuses to boot without one)
+      - ./zep_ce.yaml:/app/zep.yaml
+    environment:
+      - ZEP_CONFIG_FILE=zep.yaml
+    networks: [zep-network]
+    depends_on:
+      graphiti: {condition: service_healthy}
+      db: {condition: service_healthy}
+
+  db:
+    image: ankane/pgvector:v0.5.1
+    restart: on-failure
+    shm_size: "128mb"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks: [zep-network]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
+
+  graphiti:
+    image: zepai/graphiti:0.3
+    ports:
+      - "8013:8003"
+    networks: [zep-network]
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8003/healthcheck')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      neo4j: {condition: service_healthy}
+    environment:
+      - OPENAI_API_KEY=shim
+      - OPENAI_BASE_URL=http://host.docker.internal:4000/v1
+      - MODEL_NAME=gpt-4o-mini
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=zepzepzep
+      - PORT=8003
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  neo4j:
+    image: neo4j:5.22.0
+    networks: [zep-network]
+    healthcheck:
+      test: wget http://localhost:7687 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 5s
+    ports:
+      - "7476:7474"
+      - "7689:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/zepzepzep
+
+networks:
+  zep-network:
+    driver: bridge

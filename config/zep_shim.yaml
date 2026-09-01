@@ -1,0 +1,36 @@
+# LiteLLM shim for the Zep CE stack (the README explains how the stack is brought up).
+#
+# Why a shim: Zep CE ships `zepai/graphiti:0.3`, which is hardwired to OpenAI model
+# names (`gpt-4o-mini` for extraction, `text-embedding-3-small` for embeddings) and
+# takes a single OPENAI_BASE_URL for both. Our research gateway serves chat models but
+# no embedding route, so neither endpoint alone can satisfy that container.
+#
+# This shim exposes exactly the two OpenAI model names Zep's graphiti asks for and
+# routes each to the same backends every other arm of the study uses:
+#   gpt-4o-mini            -> the configured gateway (same extraction model family)
+#   text-embedding-3-small -> local Ollama nomic-embed-text (same embedder, 768-d)
+#
+# The upstream model id comes from the environment rather than being written here. It is
+# an endpoint-specific string that carries a deployment's private routing namespace, and
+# this file is published; the sanitiser that strips such namespaces runs over generated
+# reports, not over hand-written config, so a literal here would ship as-is.
+#
+# Set it to whatever your gateway serves, e.g.:
+#   export ZEP_SHIM_LLM_MODEL=openai/<your-namespace>/<model>
+#
+# Run: litellm --config config/zep_shim.yaml --port 4000
+
+model_list:
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: os.environ/ZEP_SHIM_LLM_MODEL
+      api_base: os.environ/LITELLM_BASE
+      api_key: os.environ/LITELLM_API_KEY
+
+  - model_name: text-embedding-3-small
+    litellm_params:
+      model: ollama/nomic-embed-text
+      api_base: http://localhost:11434
+
+litellm_settings:
+  drop_params: true

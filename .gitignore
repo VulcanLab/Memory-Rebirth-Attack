@@ -1,0 +1,50 @@
+# Within the published tree, these still never ship.
+
+# --- Secrets ---
+.env
+.env.bak.*
+# generated from the upstream template; holds a local API secret
+config/zep_ce.yaml
+
+# --- Raw research data ---
+# Run artifacts are written outside this tree by default (RESULTS_DIR in .env.example).
+# This rule is the backstop for a local run pointed here anyway: raw output records
+# model ids, endpoint behaviour and full retrieved contexts, and is not published.
+results/
+viu/
+# --- Local environment / scratch ---
+.venv/
+__pycache__/
+*.pyc
+.python-version
+qdrant/
+.cognee_cache/
+scripts/
+private/
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# WHAT IS DELIBERATELY COMMITTED, AND WHY
+#
+# An earlier version of this file excluded pyproject.toml, docs/ and config/,
+# which made the published repository unusable: without pyproject.toml there is no
+# dependency definition to install from, and without docs/ there is no description
+# of what any of it does.
+#
+#   pyproject.toml  dependency definition; nothing runs without it
+#   uv.lock         exact versions, so a reproduction matches the reported run
+#   core/           situations, endpoint resolution, sanitisation
+#   adapters/       per-system retrieval probes
+#   attacks/        the experiments
+#   guard/          the proposed mitigation
+#   tools/          model probes, the guard sweep, the parse audit, and the runners
+#   config/*.yaml   stack definitions (templates only; no secrets)
+#   docs/           methodology, per-system analysis, guard evaluation, and
+#                   the two animated walkthroughs (overview.mp4/.gif, memory-rebirth-attack.mp4)
+#   .env.example    the configuration surface a user needs to run anything
+#
+# Documents reporting OUR measurements live in ../private/ and are not in this tree.
+# Any model id that does reach a published file is de-identified by core/sanitize.py,
+# which strips the deployment's private routing namespace and keeps the public model
+# family.
+# ---------------------------------------------------------------------------
