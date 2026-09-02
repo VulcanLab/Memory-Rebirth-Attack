@@ -40,7 +40,7 @@ private/
 #   tools/          model probes, the guard sweep, the parse audit, and the runners
 #   config/*.yaml   stack definitions (templates only; no secrets)
 #   docs/           methodology, per-system analysis, guard evaluation, and
-#                   the two animated walkthroughs (overview.mp4/.gif, memory-rebirth-attack.mp4)
+#                   the animated walkthrough (memory-rebirth-reel.mp4/.gif)
 #   .env.example    the configuration surface a user needs to run anything
 #
 # Documents reporting OUR measurements live in ../private/ and are not in this tree.

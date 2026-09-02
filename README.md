@@ -69,8 +69,13 @@ The attack in one picture: a benign query resurfaces a revoked policy, which dri
 
 Everything routes through one retrieval boundary; that is the one place a fix belongs.
 
-![overview.gif](docs/overview.gif)
-**[`docs/memory-rebirth-attack.mp4`](docs/memory-rebirth-attack.mp4)** is the narrated companion, about 7 minutes 20, with the headline evaluation figures burned into the frame (no defense 44.2%, retrieval filter 0/1620, the tool-layer guardrail identical to no defense at 62/360, and so on). It carries the current, post-rerun numbers and is regenerated whenever a result file it quotes changes, so a reader should not expect it to match an older revision of this repository byte for byte.
+![memory-rebirth-reel.gif](docs/memory-rebirth-reel.gif)
+
+**[`docs/memory-rebirth-reel.mp4`](docs/memory-rebirth-reel.mp4)** is the same thing at full resolution, 1920x1080, about 4 minutes 14, no audio. The GIF above is a 960px copy of it for reading in the browser; the MP4 is the one to present from.
+
+It draws the mechanism rather than summarising the results. The middle of it is nine flow diagrams, one per situation, each showing the process that situation's revoked policy corrupts: who is involved, what travels each step, the control that was supposed to stand in the way, and the diverted path that opens once the revoked record comes back. Every figure it puts on screen is checked against the paper before it renders, so the numbers in the frame and the numbers in this repository cannot drift apart.
+
+It is regenerated whenever a result file it quotes changes, so a reader should not expect it to match an older revision of this repository byte for byte.
 
 
 | it covers | |
@@ -177,8 +182,8 @@ Memory-Rebirth-Attack/
 
   config/               stack definitions (Neo4j, the Zep stack, gateway shims)
   docs/                 methodology, per-system analysis, guard evaluation, model
-                        catalogue, and the two animated walkthroughs (overview.mp4/.gif,
-                        memory-rebirth-attack.mp4)
+                        catalogue, and the animated walkthrough
+                        (memory-rebirth-reel.mp4/.gif)
 ```
 
 Raw output records model ids, endpoint behaviour and full retrieved contexts. That is research data, so it is kept out of the published repository; both paths are configurable in `.env`. Any model id that does reach a published file is de-identified by `core/sanitize.py`, which strips the deployment's private routing namespace and keeps the public model family.
