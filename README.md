@@ -60,6 +60,7 @@ bash tools/run_full_9model.sh
 11. [Troubleshooting](#11-troubleshooting)
 12. [Systems studied, prior work, and acknowledgements](#12-systems-studied-prior-work-and-acknowledgements)
 13. [License](#13-license)
+14. [Citing](#14-citing)
 
 ---
 
@@ -557,3 +558,27 @@ We are grateful to the maintainers of all of the above. Naming a system here is 
 Apache License 2.0, see [`LICENSE`](LICENSE). Copyright OneSleeve (SG) Pte. Ltd. (Vulcan).
 
 That covers this repository's own code and documentation. It does not relicense the memory systems under test, which remain under their own upstream licenses; see the project links above for each.
+
+---
+
+## 14. Citing
+
+The paper this repository accompanies is on arXiv:
+
+**Revoked but Still Authoritative: An Empirical Study of Revocation Enforcement in Agent-Memory Systems**
+Yi Ting Shen, Kentaroh Toyoda, Alex Leung
+<https://arxiv.org/abs/2609.08258>
+
+If you find this project useful, please consider citing:
+
+```
+@misc{shen2026revoked,
+      title={Revoked but Still Authoritative: An Empirical Study of Revocation Enforcement in Agent-Memory Systems},
+      author={Yi Ting Shen and Kentaroh Toyoda and Alex Leung},
+      year={2026},
+      eprint={2609.08258},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2609.08258},
+}
+```
