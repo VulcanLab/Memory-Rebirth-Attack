@@ -22,7 +22,7 @@ qdrant/
 scripts/
 private/
 .DS_Store
-
+docs/media/*
 # ---------------------------------------------------------------------------
 # WHAT IS DELIBERATELY COMMITTED, AND WHY
 #
