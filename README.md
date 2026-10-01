@@ -166,6 +166,19 @@ Memory-Rebirth-Attack/
     attack_*.py         standalone single-purpose experiments, kept because each
                         demonstrates one step of the chain in isolation
 
+    review_common.py    shared decision path for the four controlled follow-ups below:
+                        one retry ladder, one parser, one output shape, so a
+                        difference between two arms cannot come from the stage that
+                        is meant to be identical across them
+    attack_rule_ablation.py   the same situation with and without a system-prompt
+                        prohibition, on one retrieval held fixed across arms
+    attack_phrasing.py  every revoked policy rewritten without its self-authorizing
+                        clauses, to separate the retrieval effect from the wording
+    attack_metadata.py  the same retrieval rendered with and without the validity
+                        metadata the store already holds
+    attack_guard_utility.py   what the guard withholds, and costs, on stores that
+                        have nothing revoked in them
+
   guard/
     stale_guard.py      the proposed mitigation (library form) + self-check
     mcp_server.py       the same thing as an MCP tool for agents
@@ -175,6 +188,10 @@ Memory-Rebirth-Attack/
     probe_models.py     catalogue which models an endpoint can actually run
     probe_anthropic.py  verify an Anthropic-compatible endpoint and credential
     guard_sweep.py      threshold sweep for the guard
+    pin_versions.py     resolve, from the machine, which client versions, container
+                        images and served model ids a run actually used
+    failure_taxonomy.py separate deleted, unrecorded, unexposed and unenforced
+                        revocation, over a recorded matrix run
     parse_audit.py      how often a decision reply yields no parseable action
     run_experiments.py  cross-platform runner for the LLM-free core proofs
     run_mwe.sh          orchestrates the core experiments end to end
@@ -265,7 +282,7 @@ The two selectors are independent, so mixing is normal and usually cheapest, a h
 
 The models whose *decisions* are measured are configured separately from the model doing extraction inside the systems under test, via `DECISION_MODELS`, `DECISION_BASE` and `DECISION_KEY`. Leave the latter two blank to reuse the `LLM_PROVIDER` endpoint. Keeping them separate is what lets a single provider serve every evaluated model identically while extraction runs somewhere cheaper.
 
-**Credential formats matter on some providers.** Anthropic issues both an interactive OAuth token (`sk-ant-oat01-…`) and a programmatic API key (`sk-ant-api03-…`). The OAuth form may authenticate, but its quota is shared with whatever interactive client is signed in with it, so a batch run competes with that client and stalls on rate limits rather than failing cleanly. Use an API key for measurement runs, and check which case you are in:
+**Credential formats matter on some providers.** Anthropic issues both an interactive OAuth token (`sk-ant-oat01-...`) and a programmatic API key (`sk-ant-api03-...`). The OAuth form may authenticate, but its quota is shared with whatever interactive client is signed in with it, so a batch run competes with that client and stalls on rate limits rather than failing cleanly. Use an API key for measurement runs, and check which case you are in:
 
 ```bash
 uv run python tools/probe_anthropic.py
