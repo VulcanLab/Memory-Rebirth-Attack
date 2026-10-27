@@ -1,0 +1,14 @@
+[project]
+name = "mwe"
+version = "0.1.0"
+description = "Memory Rebirth Attack: minimal working experiment against Graphiti"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "graphiti-core[google-genai]",
+    "python-dotenv>=1.0",
+    "mcp>=1.27.2,<2",
+]
+
+[tool.uv.sources]
+graphiti-core = { path = "../test-project/graphiti-main/graphiti-main", editable = true }
